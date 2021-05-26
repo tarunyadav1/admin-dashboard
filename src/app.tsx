@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
   const [users, setUsers] = useUserState([]);
   const [topUsers, setTopUsers] = useState([]);
+  const [searchInput, setSearchInput] =useState(' ')
+  const [isSearchInputSelected, setIsSearchInputSelected] = useState(false)
+  const [searchUserList, setSearchUserList] = useState([])
   const classes = useStyles();
 
   const makeUserList = (data: any) => {
@@ -43,23 +46,30 @@ export default function App() {
       .then((response) => response.json())
       .then((data) => makeUserList(data));
   }
-  
-    
 
   useEffect(() => {
     getUsers();
   }, []);
 
+
   return (
     <Router>
       <div className={classes.root}>
-        <NavBar />
+        <NavBar  
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        setIsSearchInputSelected={setIsSearchInputSelected} />
         <SideBar />
         <MainContent
           users={users}
           topUsers={topUsers}
           setUsers={setUsers}
           setTopUsers={setTopUsers}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          isSearchInputSelected={isSearchInputSelected}
+          setSearchUserList={setSearchUserList}
+          searchUserList={searchUserList}
         />
       </div>
     </Router>

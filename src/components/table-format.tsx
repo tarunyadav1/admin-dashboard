@@ -21,6 +21,8 @@ interface BasicTable {
   };
   setUsers: any;
   setTopUsers: any;
+  topUsers?: any;
+  isTopUserTable: boolean;
 }
 
 interface user {
@@ -40,13 +42,17 @@ export default function BasicTable({
   users,
   setUsers,
   setTopUsers,
+  topUsers,
+  isTopUserTable,
 }: BasicTable) {
   const classes = useStyles();
   React.useEffect(() => {
     const topUserList = users.filter((user: any) => user.isTopUser === true);
     setTopUsers(topUserList);
   }, [users]);
-  console.log("heollen");
+
+  const getCurrentUser = () => (isTopUserTable ? topUsers : users);
+  const currentUserList = getCurrentUser();
 
   if (users.length === 0) return <div></div>;
 
@@ -68,6 +74,25 @@ export default function BasicTable({
 
         return newUserList;
       });
+
+      setTimeout(function () {
+        setUsers((preState: any) => {
+          const newUserList = preState.map((preUser: user) => {
+            if (preUser.id === user.id) {
+              return {
+                id: user.id,
+                user: user.user,
+                email: user.email,
+                isBlock: false,
+                isTopUser: user.isTopUser,
+              };
+            }
+            return { ...preUser };
+          });
+
+          return newUserList;
+        });
+      }, 300000);
     } else {
       setUsers((preState: any) => {
         const newUserList = preState.map((preUser: user) => {
@@ -139,7 +164,7 @@ export default function BasicTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user: user) => (
+          {currentUserList.map((user: user) => (
             <TableRow key={user.id}>
               <TableCell component="th" scope="row">
                 {user.id}
